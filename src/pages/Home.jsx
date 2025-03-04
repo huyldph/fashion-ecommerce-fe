@@ -2,123 +2,7 @@ import React, {useEffect} from 'react';
 import {ShoppingCartIcon, HeartIcon} from '@heroicons/react/24/outline';
 import {Link} from 'react-router-dom';
 import {useCart} from "../contexts/CartContext.jsx";
-
-const products = [
-    {
-        id: 1,
-        name: 'Áo Thun Basic',
-        price: '199000đ',
-        image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Áo',
-        purchases: 10,
-    },
-    {
-        id: 2,
-        name: 'Quần Jean Nam',
-        price: '499000đ',
-        image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Quần',
-        purchases: 20,
-    },
-    {
-        id: 3,
-        name: 'Áo Sơ Mi Trắng',
-        price: '299000đ',
-        image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Áo',
-        purchases: 30,
-    },
-    {
-        id: 4,
-        name: 'Váy Đầm Dự Tiệc',
-        price: '799000đ',
-        image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Váy',
-        purchases: 40,
-    },
-    {
-        id: 5,
-        name: 'Áo Khoác Denim',
-        price: '599000đ',
-        image: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Áo',
-        purchases: 50,
-    },
-    {
-        id: 6,
-        name: 'Quần Short Nữ',
-        price: '249000đ',
-        image: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Quần',
-        purchases: 60,
-    },
-    {
-        id: 7,
-        name: 'Áo Sơ Mi Trắng',
-        price: '299000đ',
-        image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Áo',
-        purchases: 70,
-    },
-    {
-        id: 8,
-        name: 'Váy Đầm Dự Tiệc',
-        price: '799000đ',
-        image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Váy',
-        purchases: 80,
-    },
-    {
-        id: 9,
-        name: 'Áo Khoác Denim',
-        price: '599000đ',
-        image: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Áo',
-        purchases: 90,
-    },
-    {
-        id: 10,
-        name: 'Quần Short Nữ',
-        price: '249000đ',
-        image: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Quần',
-        purchases: 100,
-    },
-    {
-        id: 11,
-        name: 'Áo Sơ Mi Trắng',
-        price: '299000đ',
-        image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Áo',
-        purchases: 110,
-    },
-    {
-        id: 12,
-        name: 'Váy Đầm Dự Tiệc',
-        price: '799000đ',
-        image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Váy',
-        purchases: 120,
-    },
-    {
-        id: 13,
-        name: 'Áo Khoác Denim',
-        price: '599000đ',
-        image: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Áo',
-        purchases: 130,
-    },
-    {
-        id: 14,
-        name: 'Quần Short Nữ',
-        price: '249000đ',
-        image: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-        category: 'Quần',
-        purchases: 140,
-    },
-];
-
-const categories = ['Tất cả', 'Áo', 'Quần', 'Váy'];
+import { useProducts, useCategories } from '../hooks/useApi';
 
 const slides = [
     {
@@ -143,11 +27,20 @@ export default function Home() {
     const [currentSlide, setCurrentSlide] = React.useState(0);
     const [currentPage, setCurrentPage] = React.useState(1);
     const productsPerPage = 12; // Số sản phẩm trên mỗi trang
-    const { dispatch } = useCart();
+    const {dispatch} = useCart();
 
-    const filteredProducts = selectedCategory === 'Tất cả'
-        ? products
-        : products.filter(product => product.category === selectedCategory);
+    // Fetch categories using React Query
+    const {data: categories, isLoading: categoriesLoading} = useCategories();
+    
+    // Fetch products using React Query
+    const {data: products, isLoading, error} = useProducts();
+
+    const filteredProducts = React.useMemo(() => {
+        if (!products) return [];
+        return selectedCategory === 'Tất cả'
+            ? products
+            : products.filter(product => product.categoryName === selectedCategory);
+    }, [products, selectedCategory]);
 
     // Auto slide every 5 seconds
     useEffect(() => {
@@ -237,32 +130,57 @@ export default function Home() {
             {/* Category Filter */}
             <div className="max-w-8xl mx-auto px-8 py-8">
                 <div className="flex space-x-4 mb-8">
-                    {categories.map(category => (
+                    <button
+                        onClick={() => handleCategoryChange('Tất cả')}
+                        className={`px-4 py-2 rounded-full ${
+                            selectedCategory === 'Tất cả'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-white text-gray-600 hover:bg-gray-100'
+                        }`}
+                    >
+                        Tất cả
+                    </button>
+                    {categoriesLoading ? (
+                        <div className="flex items-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent"></div>
+                        </div>
+                    ) : categories?.map(category => (
                         <button
-                            key={category}
-                            onClick={() => handleCategoryChange(category)}
+                            key={category.categoryId}
+                            onClick={() => handleCategoryChange(category.categoryName)}
                             className={`px-4 py-2 rounded-full ${
-                                selectedCategory === category
+                                selectedCategory === category.categoryName
                                     ? 'bg-blue-600 text-white'
                                     : 'bg-white text-gray-600 hover:bg-gray-100'
                             }`}
                         >
-                            {category}
+                            {category.categoryName}
                         </button>
                     ))}
                 </div>
 
                 {/* Products Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    {currentProducts.length > 0 ? (
+                    {isLoading ? (
+                        <div className="col-span-full text-center py-8">
+                            <div
+                                className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div>
+                            <p className="mt-2 text-gray-600">Đang tải sản phẩm...</p>
+                        </div>
+                    ) : error ? (
+                        <div className="col-span-full text-center py-8 text-red-500">
+                            Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại sau.
+                        </div>
+                    ) : currentProducts.length > 0 ? (
                         currentProducts.map(product => (
-                            <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden group">
-                                <Link to={`/product/${product.id}`} className="block">
+                            <div key={product.productId}
+                                 className="bg-white rounded-lg shadow-md overflow-hidden group">
+                                <Link to={`/product/${product.productId}`} className="block">
                                     <div className="relative">
                                         <img
-                                            src={product.image}
-                                            alt={product.name}
-                                            className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                                            src={product.imageUrl}
+                                            alt={product.productName}
+                                            className="w-full h-96 object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
                                         <div className="absolute top-4 right-4 flex space-x-2">
                                             <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
@@ -271,11 +189,12 @@ export default function Home() {
                                         </div>
                                     </div>
                                     <div className="p-4">
-                                        <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
-                                        <p className="text-gray-600 mb-4">{product.category}</p>
+                                        <h3 className="text-lg font-semibold text-gray-800">{product.productName}</h3>
+                                        <p className="text-gray-600 mb-4">{product.categoryName}</p>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-blue-600 font-bold">{product.price}</span>
-                                            <p>Đã bán {product.purchases}</p>
+                                            <span
+                                                className="text-blue-600 font-bold">{product.price.toLocaleString('vi-VN')}đ</span>
+                                            <p>Đã bán {product.purchaseCount}</p>
                                         </div>
                                     </div>
                                 </Link>
